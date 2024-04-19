@@ -65,13 +65,6 @@ Installation of this system is divided into two parts: the front-end client and 
 
 This system uses a PostgreSQL database, with the following tables:
 
-- Faculty (FacultyName, FacultyID)
-- Major (MajorName, MajorID, FacultyID)
-- Class (ClassID, MajorID)
 - Person (ID, Name, Gender, Age, Phone, PersonType)
-- Student (ID, FacultyID, MajorID, ClassID)
-- Teacher (ID, FacultyID, Position)
-- Worker (ID, Type)
 - Record (ID, Time, DoorID, Direction, Data, Result)
 - Door (DoorID, DoorLocate)
-- FaceImage (ID, Data, Feature Vector)
