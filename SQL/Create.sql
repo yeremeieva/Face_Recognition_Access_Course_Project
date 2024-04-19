@@ -44,5 +44,4 @@ CREATE INDEX PersonID ON Person (PersonID);
 
 CREATE VIEW DoorRecordView AS
 SELECT *
-FROM Record
-         NATURAL JOIN Door;
+FROM Record NATURAL JOIN Door;
