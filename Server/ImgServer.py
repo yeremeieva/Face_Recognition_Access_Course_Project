@@ -18,7 +18,7 @@ app = Flask(__name__)
 def hello():
     return "Hello World!"
 
-
+# todo update file
 @app.route("/recognize", methods=['POST'])
 def recognize():
     response = request.json
@@ -26,20 +26,16 @@ def recognize():
     rgb_frame = json.loads(rgb_frame)
     rbg_image = Image.fromarray(np.uint8(rgb_frame))
     boxes, probs = facenet.face_detect(rbg_image)
-    # 人脸概率在0.5以上的保留
     boxes = [box for box, prob in zip(boxes, probs) if prob > 0.5]
-    if boxes:  # 检测到人脸
-        # 人脸图像
+    if boxes:
         images = facenet.boxes_to_images(rbg_image, boxes)
-        # 人脸特征
         embeddings_features = facenet.face_recognize(images)
-        # 人脸识别
         ids, names = facenet.face_features_compare(embeddings_features)
         if ids:
             for id, name, image in zip(ids, names, images):
                 insert_processor.store_face_recognized_record(
                     door_id=response["door_id"], direction=response["direction"],
-                    result_id=id, image_data=np.uint8(image))
+                    person_id=id, image_data=np.uint8(image))
         return json.dumps([ids, names, boxes])
 
 
@@ -50,14 +46,13 @@ def register():
     rgb_frame = json.loads(rgb_frame)
     rbg_image = Image.fromarray(np.uint8(rgb_frame))
     boxes, probs = facenet.face_detect(rbg_image)
-    # 人脸概率在0.5以上的保留
     boxes = [box for box, prob in zip(boxes, probs) if prob > 0.5]
     boxes.sort()
     images = facenet.boxes_to_images(rbg_image, boxes[-1:])
     embeddings_features = facenet.face_recognize(images)
     feature = embeddings_features[0]
-    facenet.register_new_face(response["id"], response["name"], images[0], feature)
-    return "register success"
+    facenet.register_new_person(person_id=response["id"], name=response["name"], image_data=images[0], new_feature_vector=feature)
+    return "registration succeeded"
 
 
 @app.route("/door_record", methods=['POST'])
@@ -67,38 +62,10 @@ def door_record():
     return json.dumps(records)
 
 
-@app.route("/student_record", methods=['POST'])
-def student_record():
+@app.route("/person_record", methods=['POST'])
+def person_record():
     response = request.json
-    records = query_processor.query_student_face_recognition_record(**response)
-    return json.dumps(records)
-
-
-@app.route("/teacher_record", methods=['POST'])
-def teacher_record():
-    response = request.json
-    records = query_processor.query_teacher_face_recognition_record(**response)
-    return json.dumps(records)
-
-
-@app.route("/class_record", methods=['POST'])
-def class_record():
-    response = request.json
-    records = query_processor.query_class_face_recognition_record(**response)
-    return json.dumps(records)
-
-
-@app.route("/major_record", methods=['POST'])
-def major_record():
-    response = request.json
-    records = query_processor.query_major_face_recognition_record(**response)
-    return json.dumps(records)
-
-
-@app.route("/faculty_record", methods=['POST'])
-def faculty_record():
-    response = request.json
-    records = query_processor.query_faculty_face_recognition_record(**response)
+    records = query_processor.query_person_face_recognition_record(**response)
     return json.dumps(records)
 
 
