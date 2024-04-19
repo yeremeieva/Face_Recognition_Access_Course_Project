@@ -58,9 +58,9 @@ class MainWindow(QMainWindow):
         end_time = self.record_dialog.dateEdit_end.text()
         print(id, begin_time, end_time)
         if id == "":
-            result = gate.door_record(gate.door_id, gate.direction, begin_time, end_time)
+            result = door_record(gate.door_id, gate.direction, begin_time, end_time)
         else:
-            result = id_record(id, begin_time, end_time)
+            result = person_record(id, begin_time, end_time)
         result = json.loads(result)
         self.record_dialog.tableWidget.setRowCount(len(result))
         for i in range(len(result)):
