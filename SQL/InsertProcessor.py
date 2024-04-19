@@ -16,10 +16,10 @@ class InsertProcessor:
         conn.commit()
         self.conn_pool.putconn(conn)
 
-    def insert_into_person(self, person_id, name, surname, gender, age, phone, position, feature_vector, image_data):
+    def insert_into_person(self, person_id, name, gender, age, phone, position, feature_vector, image_data):
         sql = "INSERT INTO Person (PersonID, Name,Surname, Gender, Age, PhoneNumber, Position, FeatureVector," \
-              " ImageData) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", \
-              (person_id, name, surname, gender, age, phone, position,
+              " ImageData) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", \
+              (person_id, name, gender, age, phone, position,
                psycopg2.Binary(feature_vector), psycopg2.Binary(image_data))
         asyncio.run(self.run_insert(sql))
 

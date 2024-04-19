@@ -19,7 +19,7 @@ class QueryProcessor:
         return await query_processor.run_query(query)
 
     def load_face_image_feature_vector(self):
-        sql = "SELECT PersonID,Name,FeatureVector FROM  Person"
+        sql = "SELECT PersonID, Name, FeatureVector FROM  Person"
         return asyncio.run(self.process_query(sql))
 
     def query_door_record(self, door_id, direction, start_time, end_time):
@@ -29,8 +29,8 @@ class QueryProcessor:
         return asyncio.run(self.process_query(sql))
 
     def query_person_face_recognition_record(self, person_id, start_time, end_time):
-        sql = "SELECT PersonID,Name, Surname,RecordTime,DoorID,Direction " \
-              "FROM Person,DoorRecordView " \
+        sql = "SELECT PersonID, Name, RecordTime, DoorID, Direction " \
+              "FROM Person, DoorRecordView " \
               "WHERE PersonID = %s AND RecordTime BETWEEN %s AND %s " \
               "AND Person.PersonID = DoorRecordView.PersonID", \
             (person_id, start_time, end_time)

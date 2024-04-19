@@ -10,8 +10,7 @@ CREATE TYPE DoorDirection AS ENUM ('In', 'Out');
 CREATE TABLE Person
 (
     PersonID    integer         PRIMARY KEY,
-    Name        varchar(20)     NOT NULL,
-    Surname     varchar(20)     NOT NULL,
+    Name        varchar(50)     NOT NULL,
     Gender      GenderType      NOT NULL,
     Age         integer         NOT NULL CHECK (Age >= 0),
     PhoneNumber varchar(20)     NOT NULL,
