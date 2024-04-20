@@ -1,7 +1,6 @@
 DROP DATABASE IF EXISTS AccessControlSystem;
 CREATE DATABASE AccessControlSystem;
 
-\c accesscontrolsystem
 
 CREATE TYPE GenderType AS ENUM ('Male', 'Female');
 CREATE TYPE PositionType AS ENUM ('Admin', 'Worker');
@@ -23,7 +22,8 @@ CREATE TABLE Person
 CREATE TABLE Door
 (
     DoorID      integer         PRIMARY KEY,
-    Location    varchar(50)     NOT NULL
+    AccessType  PositionType    NOT NULL,
+    Direction   DoorDirection   NOT NULL
 );
 
 CREATE TABLE Record
@@ -31,10 +31,8 @@ CREATE TABLE Record
     RecordID    integer         PRIMARY KEY,
     RecordTime  TIMESTAMP WITH TIME ZONE DEFAULT ('now'::text)::timestamp with time zone,
     Access      boolean         NOT NULL,
-    ImageData   bytea           NOT NULL,
     DoorID      integer         NOT NULL references Door (DoorID),
-    PersonID    integer         NULL references Person (PersonID),
-    Direction   DoorDirection   NOT NULL
+    PersonID    integer         NULL references Person (PersonID)
 );
 
 
