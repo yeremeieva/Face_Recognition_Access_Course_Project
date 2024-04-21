@@ -36,28 +36,43 @@ class Gate:
 
     def run(self):
         last_record_time = 0  # Keep track of the last record time
-        record_interval = 1  # Interval in seconds
+        last_box_time = 0    # Last time the box was updated
+        record_interval = 1  # Interval in seconds for records
+        box_interval = 0.1   # Interval in seconds for box updates
+        box = None           # Store last box coordinates
+        person_details = None # Store last known/unknown person details
 
         while self.cap.isOpened():
             ret, frame = self.cap.read()
             if ret:
                 frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                is_known, person, box, feature_vector = self.facenet.detect_and_compare_faces(frame)
+                current_time = time.time()
+
+                # Update face detection at specified interval
+                if current_time - last_box_time > box_interval:
+                    is_known, person, box, feature_vector = self.facenet.detect_and_compare_faces(frame)
+                    last_box_time = current_time  # Update the last box update time
+                    if box is not None:
+                        x1, y1, x2, y2 = int(box[0]), int(box[1]), int(box[2]), int(box[3])
+                    person_details = (is_known, person)
+
+                # Draw the last known box and details
                 if box is not None:
                     x1, y1, x2, y2 = int(box[0]), int(box[1]), int(box[2]), int(box[3])
-                    current_time = time.time()
-                    if current_time - last_record_time > record_interval:
-                        if is_known:
-                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)  # Green box for known person
-                            cv2.putText(frame, person['name'], (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
-                            # Record known person access
-                            self.add_record(person['person_id'], person['position'], frame)
-                        else:
-                            cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)  # Red box for unknown person
-                            cv2.putText(frame, "Unknown", (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
-                            # Record unknown person access
-                            # self.record_access(None, False, frame)
+                    if person_details[0]:  # is_known is True
+                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)  # Green box for known person
+                        cv2.putText(frame, person_details[1]['name'], (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+                    else:
+                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)  # Red box for unknown person
+                        cv2.putText(frame, "Unknown", (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
+
+                    # Handle recording known person access
+                    if person_details[0] and current_time - last_record_time > record_interval:
+                        t = Thread(target=self.add_record, args=(person_details[1]['person_id'], person_details[1]['position'], frame))
+                        t.setDaemon(True)
+                        t.start()
                         last_record_time = current_time  # Update the last record time
+
                 self.widget.display_image(frame)
             else:
                 print("Failed to capture face from camera.")
