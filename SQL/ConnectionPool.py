@@ -11,7 +11,7 @@ class ConnectionPool:
                 minconn=4, maxconn=20,
                 dbname="accesscontrolsystem",
                 user="postgres",
-                password="111111",
+                password="admin",
                 host="localhost",
                 port="5432")
         return cls._instance

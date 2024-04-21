@@ -51,9 +51,9 @@ FROM Record NATURAL JOIN Door;
 
 INSERT INTO Person (PersonID, Name, Surname, Gender, Age, PhoneNumber, Position, FeatureVector, ImageData)
 VALUES
-(1, 'John', 'Doe', 'Male', 30, '123-456-7890', 'Worker', '', ''),
-(2, 'Jane', 'Smith', 'Female', 25, '234-567-8901', 'Worker', '', ''),
-(3, 'Alice', 'Johnson', 'Female', 28, '345-678-9012', 'Worker', '', '');
+(1, 'John', 'Doe', 'Male', 30, '123-456-7890', 'Worker', ' ', ' '),
+(2, 'Jane', 'Smith', 'Female', 25, '234-567-8901', 'Worker', ' ', ' '),
+(3, 'Alice', 'Johnson', 'Female', 28, '345-678-9012', 'Worker', ' ', ' ');
 
 
 INSERT INTO Door (DoorID, AccessType, Direction, Location)

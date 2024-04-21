@@ -15,6 +15,7 @@ class FacesTableWindow(QWidget):
         self.background_image = self.main_window.background_image
         if self.background_image.isNull():
             print("Failed to load background.png")
+        self.resize(main_window.size())
         self.setMinimumSize(400, 400)
         self.layout = QVBoxLayout(self)
         self.table = QTableWidget()
@@ -25,7 +26,16 @@ class FacesTableWindow(QWidget):
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
 
         # Set slightly transparent background and font for the table
-        self.table.setStyleSheet("background: transparent;")
+        self.table.setSortingEnabled(True)
+        table_style = """
+                    QTableWidget {
+                        background: transparent;
+                        color: white; 
+                    }
+                """
+        # self.table.setStyleSheet("background: transparent;")
+        self.table.setStyleSheet(table_style)
+
         font = QFont("Times New Roman", 12)
         self.table.setFont(font)
         # layout
