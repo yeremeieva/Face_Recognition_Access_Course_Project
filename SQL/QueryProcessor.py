@@ -18,42 +18,12 @@ class QueryProcessor:
     async def process_query(self, query):
         return await query_processor.run_query(query)
 
-    def load_face_image_feature_vector(self):
-        sql = "SELECT PersonID,Name,FeatureVector FROM  Person"
+    def query_records(self):
+        sql = "SELECT RecordID, RecordTime, Access, DoorID, PersonID FROM Record"
         return asyncio.run(self.process_query(sql))
 
-    def query_door_record(self, door_id, direction, start_time, end_time):
-        sql = "SELECT * FROM DoorRecordView " \
-              "WHERE DoorID = %s AND Direction = %s AND RecordTime BETWEEN %s AND %s", \
-            (door_id, direction, start_time, end_time)
+    def query_people(self):
+        sql = "SELECT PersonID, Name, Gender, Age, PhoneNumber, Position, FeatureVector, ImageData FROM Person"
         return asyncio.run(self.process_query(sql))
-
-    def query_person_face_recognition_record(self, person_id, start_time, end_time):
-        sql = "SELECT PersonID,Name, Surname,RecordTime,DoorID,Direction " \
-              "FROM Person,DoorRecordView " \
-              "WHERE PersonID = %s AND RecordTime BETWEEN %s AND %s " \
-              "AND Person.PersonID = DoorRecordView.PersonID", \
-            (person_id, start_time, end_time)
-        return asyncio.run(self.process_query(sql))
-
-
 
 query_processor = QueryProcessor()
-
-# import time
-# from timeit import timeit
-#
-# @timeit
-# def test():
-#     queries = ["SELECT * FROM course", "SELECT * FROM dept", "SELECT * FROM sc", "SELECT * FROM student"]
-#     for query in queries:
-#         results = asyncio.run(query_processor.process_query(query))
-#         print(f"Query: {query}")
-#         print(f"Result: {results}")
-#
-# if __name__ == '__main__':
-#     start = time.time()
-#     for i in range(100):
-#         test()
-#     end = time.time()
-#     print(f"Time: {end - start}")
