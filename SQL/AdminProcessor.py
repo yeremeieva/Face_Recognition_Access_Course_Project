@@ -60,7 +60,7 @@ class AdminProcessor:
             SELECT p.Name, p.Surname, r.RecordTime, d.Location, r.Direction
             FROM Record r
             JOIN Person p ON r.PersonID = p.PersonID
-            JOIN Door d ON r.DoorID = d.DoorID
+            JOIN Door d ON r.DoorID = d.DoorID AND d.Direction = r.Direction
             WHERE DATE(r.RecordTime) = CURRENT_DATE;
         """
         return asyncio.run(self.process_query(sql))
@@ -71,7 +71,7 @@ class AdminProcessor:
             SELECT p.Name, p.Surname, r.RecordTime, d.Location
             FROM Record r
             JOIN Person p ON r.PersonID = p.PersonID
-            JOIN Door d ON r.DoorID = d.DoorID
+            JOIN Door d ON r.DoorID = d.DoorID AND d.Direction = r.Direction
             WHERE r.Access = FALSE AND
             DATE(r.RecordTime) = CURRENT_DATE;
         """
