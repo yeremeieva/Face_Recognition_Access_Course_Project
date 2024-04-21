@@ -29,7 +29,7 @@ class AdminProcessor:
                 JOIN
                     Person p ON p.PersonID = r.PersonID
                 WHERE
-                    p.PersonID = %s AND
+                    p.PersonID = $1 AND
                     recordtime >= CURRENT_DATE AND
                     recordtime < CURRENT_DATE + INTERVAL '1 day'
                 GROUP BY
@@ -69,11 +69,11 @@ class AdminProcessor:
         return asyncio.run(self.process_query(sql))
 
     def update_person_position(self, person_id, new_position):
-        sql = "UPDATE Person SET Position = %s WHERE PersonID = %s;"
+        sql = "UPDATE Person SET Position = $1 WHERE PersonID = $2;"
         return asyncio.run(self.process_query(sql, (new_position, person_id)))
 
     def list_people_by_position_and_gender(self, position, gender):
-        sql = "SELECT * FROM Person WHERE Position = %s AND Gender = %s;"
+        sql = "SELECT * FROM Person WHERE Position = $1 AND Gender = $2;"
         return asyncio.run(self.process_query(sql, (position, gender)))
 
 # Usage

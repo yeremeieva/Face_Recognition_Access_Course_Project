@@ -15,7 +15,7 @@ class InsertProcessor:
 
     def insert_into_person(self, person_id, name, surname, gender, age, phone, position, feature_vector, image):
         sql = "INSERT INTO Person (PersonID, Name, Surname, Gender, Age, PhoneNumber, Position, FeatureVector," \
-              " ImageData) VALUES (%$1, $2, $3, $4, $5, $6, $7, $8, $9)"
+              " ImageData) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)"
         values = (person_id, name, surname, gender, age, phone, position, pickle.dumps(feature_vector), pickle.dumps(image))
 
         asyncio.run(self.run_insert(sql, values))

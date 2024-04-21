@@ -2,6 +2,7 @@ from PySide6.QtGui import QImage, QPainter
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QLabel, QLineEdit, QPushButton, QMessageBox
 from PySide6.QtCore import Qt
 import requests
+import base64
 
 from threading import Thread
 
@@ -58,16 +59,23 @@ class LoginWindow(QWidget):
     def login_button_clicked(self):
         username = self.username_edit.text()
         password = self.password_edit.text()
+        encrypted_password = self.encrypt(password)
 
         if not username or not password:
             QMessageBox.warning(self, "Warning", "Please fill in all fields.")
             return
         
-        response = requests.post(f"{self.gate.url}/login", json={'username': username, 'password': password})
+        response = requests.post(f"{self.gate.url}/login", json={'username': username, 'password': encrypted_password})
         if response.status_code == 200:
             result = response.json()
+            result_password = result['password']
 
-            if result['access']:
+            if result_password:
+                decrypted_password = self.decrypt(result_password)
+                if decrypted_password != password:
+                    QMessageBox.warning(self, "Login Failed", "Invalid username or password.")
+                    return
+
                 self.main_window.toggle_visibility(True)
                 QMessageBox.information(self, "Login Successful", "You have successfully logged in.")
                 self.close()
@@ -76,3 +84,12 @@ class LoginWindow(QWidget):
         else:
             print(f"Failed to fetch records: {response.text}")
         
+    def encrypt(self, password):
+        encoded_bytes = base64.b64encode(password.encode('utf-8'))
+        encoded_password = encoded_bytes.decode('utf-8')
+        return encoded_password
+    
+    def decrypt(self, password):
+        decoded_bytes = base64.b64decode(password.encode('utf-8'))
+        decoded_password = decoded_bytes.decode('utf-8')
+        return decoded_password

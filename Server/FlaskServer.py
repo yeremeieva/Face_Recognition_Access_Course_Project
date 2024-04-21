@@ -119,14 +119,14 @@ def admin():
         return render_template('admin.html')
     
 @app.route('/login', methods=['POST'])
-async def login():
+def login():
     data = request.json
-    response = await query_processor.query_login(**data)
+    response = query_processor.query_login(**data)
 
     if response:
-        return json.dumps({'access': True})
+        return json.dumps({'password': response[0][1]})
     else:
-        return json.dumps({'access': False})
+        return json.dumps({'password': ''})
 
 def format_time_spent_result(result):
     if result:

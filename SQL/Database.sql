@@ -23,7 +23,7 @@ CREATE TABLE Person
 CREATE TABLE AdminUser
 (
     Username    varchar(50)     PRIMARY KEY,
-    Password    varchar(50)     NOT NULL,
+    Password    varchar(50)     NOT NULL
 );
 
 
@@ -49,7 +49,7 @@ CREATE TABLE Record
 
 CREATE INDEX PersonID ON Person (PersonID);
 
-INSERT INTO AdminUser (Username, Password) VALUES ('admin', 'admin');
+INSERT INTO AdminUser (Username, Password) VALUES ('admin', 'YWRtaW4='); -- base64 encoded 'admin'
 
 CREATE VIEW DoorRecordView AS
 SELECT *
