@@ -23,7 +23,8 @@ CREATE TABLE Person
 CREATE TABLE AdminUser
 (
     Username    varchar(50)     PRIMARY KEY,
-    Password    varchar(50)     NOT NULL
+    Password    varchar(50)     NOT NULL,
+    PersonID    integer         NULL references Person (PersonID)
 );
 
 
@@ -47,9 +48,11 @@ CREATE TABLE Record
 	FOREIGN KEY (DoorID, Direction) REFERENCES Door (DoorID, Direction)
 );
 
+INSERT INTO Person (PersonID, Name, Surname, Gender, Age, PhoneNumber, Position, FeatureVector, ImageData)
+VALUES (-1, 'Unknown', 'Unknown', 'Male', 0, '00000000000', 'Worker', '', '');
+
 CREATE INDEX PersonID ON Person (PersonID);
 
-INSERT INTO AdminUser (Username, Password) VALUES ('admin', 'YWRtaW4='); -- base64 encoded 'admin'
 
 CREATE VIEW DoorRecordView AS
 SELECT *

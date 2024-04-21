@@ -25,5 +25,13 @@ class QueryProcessor:
     def query_login(self, username, password):
         sql = f"SELECT * FROM AdminUser WHERE Username='{username}' AND Password='{password}'"
         return asyncio.run(self.process_query(sql))
+    
+    def query_person_by_id(self, person_id):
+        sql = f"SELECT PersonID, Name, Surname FROM Person WHERE PersonID={person_id}"
+        return asyncio.run(self.process_query(sql))
+    
+    def query_last_record_id(self):
+        sql = "SELECT MAX(RecordID) FROM Record"
+        return asyncio.run(self.process_query(sql))
 
 query_processor = QueryProcessor()

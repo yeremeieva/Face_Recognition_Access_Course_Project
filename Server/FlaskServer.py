@@ -56,8 +56,8 @@ def get_people():
         'age': person[3],
         'phone': person[4],
         'position': person[5],
-        'feature_vector': pickle.loads(person[6]),  # Deserialized
-        'image': pickle.loads(person[7])  # Deserialized
+        'feature_vector': pickle.loads(person[6]) if person[6] != b'' else None,  # Deserialized
+        'image': pickle.loads(person[7]) if person[7] != b'' else None # Deserialized
         } for person in people]
 
     return result
@@ -124,9 +124,26 @@ def login():
     response = query_processor.query_login(**data)
 
     if response:
-        return json.dumps({'password': response[0][1]})
+        return json.dumps({'password': response[0][1], 'person_id': response[0][2]})
     else:
-        return json.dumps({'password': ''})
+        return json.dumps({'password': '', 'person_id': ''})
+
+@app.route('/get_person/<person_id>', methods=['GET'])
+def get_person(person_id):
+    person = query_processor.query_person_by_id(person_id)
+    if person:
+        return jsonify([{
+            "PersonID": row[0],
+            "Name": row[1],
+            "Surname": row[2]
+        } for row in person])
+    
+@app.route('/get_last_record_id', methods=['GET'])
+def get_last_record_id():
+    record_id = query_processor.query_last_record_id()
+    if record_id[0][0] is None:
+        return json.dumps(0)
+    return json.dumps(record_id[0][0])
 
 def format_time_spent_result(result):
     if result:

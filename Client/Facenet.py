@@ -43,6 +43,8 @@ class Facenet:
     def compare_faces(self, new_feature_vector):
         threshold = 0.5  
         for person in self.people_database:
+            if person['feature_vector'] is None:
+                continue
             dist = cosine(new_feature_vector, person['feature_vector'])
             if dist < threshold:
                 return True, person  # Return True and the person if a similar face is found

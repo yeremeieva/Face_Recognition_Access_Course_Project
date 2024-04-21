@@ -77,7 +77,13 @@ class LoginWindow(QWidget):
                     return
 
                 self.main_window.toggle_visibility(True)
-                QMessageBox.information(self, "Login Successful", "You have successfully logged in.")
+                
+                person_id = result['person_id']
+                person = requests.get(f"{self.gate.url}/get_person/{person_id}").json()[0]
+                name = person['Name']
+                surname = person['Surname']
+
+                QMessageBox.information(self, "Login Successful", f"You have successfully logged in as {name} {surname}.")
                 self.close()
             else:
                 QMessageBox.warning(self, "Login Failed", "Invalid username or password.")

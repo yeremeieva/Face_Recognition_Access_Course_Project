@@ -27,7 +27,8 @@ class Gate:
             'door_access': self.positions[0],
             'location': self.location
         }
-        self.person_id_counter, self.record_id_counter = 0, 0
+        self.person_id_counter = 0
+        self.record_id_counter = requests.get(f"{self.url}/get_last_record_id").json()
 
         returnData = requests.post(f"{self.url}/add_door", json=door_details)
         
@@ -62,16 +63,22 @@ class Gate:
                     if person_details[0]:  # is_known is True
                         cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)  # Green box for known person
                         cv2.putText(frame, person_details[1]['name'], (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+
+                        # Handle recording known person access
+                        if current_time - last_record_time > record_interval:
+                            t = Thread(target=self.add_record, args=(person_details[1]['person_id'], person_details[1]['position'], frame))
+                            t.setDaemon(True)
+                            t.start()
+                            last_record_time = current_time  # Update the last record time
                     else:
                         cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 255), 2)  # Red box for unknown person
                         cv2.putText(frame, "Unknown", (x1, y1-10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
 
-                    # Handle recording known person access
-                    if person_details[0] and current_time - last_record_time > record_interval:
-                        t = Thread(target=self.add_record, args=(person_details[1]['person_id'], person_details[1]['position'], frame))
-                        t.setDaemon(True)
-                        t.start()
-                        last_record_time = current_time  # Update the last record time
+                        if current_time - last_record_time > record_interval:
+                            t = Thread(target=self.add_record, args=(-1, '', frame))
+                            t.setDaemon(True)
+                            t.start()
+                            last_record_time = current_time
 
                 self.widget.display_image(frame)
             else:
