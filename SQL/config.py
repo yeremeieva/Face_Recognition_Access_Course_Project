@@ -1,6 +1,6 @@
 __dbname = "accesscontrolsystem"
 __user = "postgres"
-__password = "123"
+__password = "admin"
 __host = "localhost"
 __port = "5432"
 

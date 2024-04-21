@@ -4,7 +4,7 @@ import asyncio
 
 import numpy as np
 
-dsn = "postgresql://postgres:123@localhost:5432/accesscontrolsystem" # dsn
+dsn = "postgresql://postgres:admin@localhost:5432/accesscontrolsystem" # dsn
 
 async def execute_query(sql, params=None):
     async with asyncpg.create_pool(min_size=4, max_size=20, dsn=dsn) as conn_pool:
@@ -26,10 +26,10 @@ async def add_admin_user(username, password, person_id):
     await execute_query(sql, values)
 
 async def main():
-    with open('fw.bin', 'rb') as f:
+    with open('Admin/fw.bin', 'rb') as f:
         feature_vector = f.read()
 
-    with open('img.bin', 'rb') as f:
+    with open('Admin/img.bin', 'rb') as f:
         image = f.read()
 
     await add_admin_person(0, 'John', 'Doe', 'Male', 25, '123456789', 'Admin', feature_vector, image)

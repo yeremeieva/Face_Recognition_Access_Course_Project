@@ -26,9 +26,9 @@ class InsertProcessor:
 
         asyncio.run(self.run_insert(sql, values))
 
-    def insert_into_record(self, record_id, access, door_id, person_id):
+    def insert_into_record(self, record_id, access, door_id, direction, person_id):
         sql = "INSERT INTO Record (RecordID, RecordTime, Access, DoorID, Direction, PersonID) VALUES ($1, NOW(), $2, $3, $4, $5)"
-        values = (record_id, access, door_id, person_id)
+        values = (record_id, access, door_id, direction, person_id)
 
         asyncio.run(self.run_insert(sql, values))
 
