@@ -1,27 +1,18 @@
 import asyncio
-from SQL.ConnectionPool import ConnectionPool
+import asyncpg
+from SQL.config import dsn
 
 class AdminProcessor:
     def __init__(self):
-        self.conn_pool = ConnectionPool().conn_pool
+        pass
 
     async def run_query(self, sql, params=None):
-        conn = self.conn_pool.getconn()
-        try:
-            cursor = conn.cursor()
-            cursor.execute(sql, params)
-            if cursor.description:
-                result = cursor.fetchall()
-            else:
-                conn.commit()
-                result = cursor.rowcount
-            return result
-        except Exception as e:
-            conn.rollback()
-            raise e
-        finally:
-            cursor.close()
-            self.conn_pool.putconn(conn)
+        async with asyncpg.create_pool(min_size=4, max_size=20, dsn=dsn) as conn_pool:
+            async with conn_pool.acquire() as connection:
+                if params:
+                    return await connection.fetch(sql, *params)
+                else:
+                    return await connection.fetch(sql)
 
     async def process_query(self, sql, params=None):
         return await self.run_query(sql, params)

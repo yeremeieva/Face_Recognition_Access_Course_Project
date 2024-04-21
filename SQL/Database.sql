@@ -20,6 +20,13 @@ CREATE TABLE Person
 );
 
 
+CREATE TABLE AdminUser
+(
+    Username    varchar(50)     PRIMARY KEY,
+    Password    varchar(50)     NOT NULL,
+);
+
+
 CREATE TABLE Door
 (
     DoorID      integer         NOT NULL,
@@ -42,6 +49,7 @@ CREATE TABLE Record
 
 CREATE INDEX PersonID ON Person (PersonID);
 
+INSERT INTO AdminUser (Username, Password) VALUES ('admin', 'admin');
 
 CREATE VIEW DoorRecordView AS
 SELECT *

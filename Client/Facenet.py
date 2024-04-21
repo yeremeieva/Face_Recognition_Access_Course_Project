@@ -54,7 +54,10 @@ class Facenet:
             # For simplicity, consider only the first detected face
             box = boxes[0]
             face = image[int(box[1]):int(box[3]), int(box[0]):int(box[2])]
-            face = Image.fromarray(face)
+            try:
+                face = Image.fromarray(face)
+            except ValueError:
+                return False, None, None, None
             face_tensor = self.loader(face).unsqueeze(0).to(self.device)
 
             with torch.no_grad():

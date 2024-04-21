@@ -3,7 +3,6 @@ import sys
 from PySide6.QtWidgets import QApplication
 
 from Gate import Gate
-# from gate import Gate
 from threading import Thread
 
 if __name__ == "__main__":

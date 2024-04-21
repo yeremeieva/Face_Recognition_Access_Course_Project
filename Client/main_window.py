@@ -1,11 +1,12 @@
 # main_window.py
 import sys
-from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel
+from PySide6.QtWidgets import QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QMessageBox
 from PySide6.QtGui import QImage, QPixmap, QPainter
 from PySide6.QtCore import QTimer, QDateTime, Qt
 
 from registration_window import RegistrationWindow
 from table_window import FacesTableWindow
+from login_window import LoginWindow
 
 
 class MainWindow(QMainWindow):
@@ -16,12 +17,18 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Face Detection System")
         self._initUI()
 
-        self.registration_window = None  
+        self.registration_window = None
+        self.login_window = None
 
     def open_registration_window(self):
         if not self.registration_window:
             self.registration_window = RegistrationWindow(self)
         self.registration_window.show()
+
+    def open_login_window(self):
+        if not self.login_window:
+            self.login_window = LoginWindow(self)
+        self.login_window.show()
 
     def _initUI(self):
         central_widget = QWidget()
@@ -66,19 +73,31 @@ class MainWindow(QMainWindow):
 
         self.record_button = QPushButton("Record", self)
         self.register_button = QPushButton("Register", self)
+        self.login_button = QPushButton("Login", self)
+        self.logout_button = QPushButton("Logout", self)
         self.register_button.clicked.connect(self.open_registration_window)
         self.record_button.clicked.connect(self.on_record)
+        self.login_button.clicked.connect(self.open_login_window)
+        self.logout_button.clicked.connect(self.on_logout)
+
+        self.toggle_visibility(False)
 
         # styles for buttons
         button_style = ("QPushButton { background-color: rgba(32, 29, 41, 255); color: white; "
                         "font-size: 16px; padding: 10px 20px; }")
         self.record_button.setStyleSheet(button_style)
         self.register_button.setStyleSheet(button_style)
+        self.login_button.setStyleSheet(button_style)
+        self.logout_button.setStyleSheet(button_style)
 
         # buttons layout
         button_layout = QHBoxLayout()
         button_layout.addWidget(self.record_button)
         button_layout.addWidget(self.register_button)
+
+        login_layout = QHBoxLayout()
+        login_layout.addWidget(self.login_button)
+        login_layout.addWidget(self.logout_button)
 
         # right panel layout widgets
         right_panel.addWidget(self.door_id_label)
@@ -87,6 +106,7 @@ class MainWindow(QMainWindow):
         right_panel.addWidget(self.time_label)
         info_panel.addWidget(right_panel_widget)
         info_panel.addLayout(button_layout)
+        info_panel.addLayout(login_layout)
 
         # bottom bar with date and time
         bottom_bar = QWidget()
@@ -142,3 +162,17 @@ class MainWindow(QMainWindow):
         qt_image = QImage(frame.data, width, height, bytesPerLine, QImage.Format_RGB888)
         pixmap = QPixmap.fromImage(qt_image)
         self.image_label.setPixmap(pixmap.scaled(self.image_label.size(), Qt.KeepAspectRatio))
+
+    def on_logout(self):
+        result = QMessageBox.question(self, "Logout", "Are you sure you want to logout?", QMessageBox.Yes | QMessageBox.No)
+        if result == QMessageBox.Yes:
+            self.toggle_visibility(False)
+            QMessageBox.information(self, "Logout", "You have successfully logged out.")
+        else:
+            pass
+    
+    def toggle_visibility(self, visible):
+        self.register_button.setVisible(visible)
+        self.record_button.setVisible(visible)
+        self.login_button.setVisible(not visible)
+        self.logout_button.setVisible(visible)

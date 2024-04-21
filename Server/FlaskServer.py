@@ -117,6 +117,16 @@ def admin():
 
     else:
         return render_template('admin.html')
+    
+@app.route('/login', methods=['POST'])
+async def login():
+    data = request.json
+    response = await query_processor.query_login(**data)
+
+    if response:
+        return json.dumps({'access': True})
+    else:
+        return json.dumps({'access': False})
 
 def format_time_spent_result(result):
     if result:
