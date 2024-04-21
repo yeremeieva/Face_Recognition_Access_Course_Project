@@ -32,10 +32,10 @@ class FacesTableWindow(QWidget):
 
             self.table.setRowCount(len(records))
             for row_index, record in enumerate(records):
-                self.table.setItem(row_index, 0, QTableWidgetItem(str(record['recordid'])))
-                self.table.setItem(row_index, 1, QTableWidgetItem(record['recordtime']))
+                self.table.setItem(row_index, 0, QTableWidgetItem(str(record['record_id'])))
+                self.table.setItem(row_index, 1, QTableWidgetItem(record['record_time']))
                 self.table.setItem(row_index, 2, QTableWidgetItem('Yes' if record['access'] else 'No'))
-                self.table.setItem(row_index, 3, QTableWidgetItem(str(record['doorid'])))
-                self.table.setItem(row_index, 4, QTableWidgetItem(str(record['personid'])))
+                self.table.setItem(row_index, 3, QTableWidgetItem(str(record['door_id'])))
+                self.table.setItem(row_index, 4, QTableWidgetItem(str(record['person_id'])))
         else:
             print(f"Failed to fetch records: {response.text}")
