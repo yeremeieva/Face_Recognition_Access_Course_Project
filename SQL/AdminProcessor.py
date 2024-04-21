@@ -31,8 +31,8 @@ class AdminProcessor:
             WITH first_in_out_times AS (
                 SELECT
                     p.Name, p.Surname,
-                    MIN(r.RecordTime) FILTER (WHERE r.Direction = 'In') AS first_in_time,
-                    MAX(r.RecordTime) FILTER (WHERE r.Direction = 'Out') AS latest_out_time
+                    MIN(r.RecordTime) FILTER (WHERE d.Direction = 'In') AS first_in_time,
+                    MAX(r.RecordTime) FILTER (WHERE d.Direction = 'Out') AS latest_out_time
                 FROM
                     Record r
                 JOIN
@@ -57,7 +57,7 @@ class AdminProcessor:
 
     def get_daily_access_report(self):
         sql = """
-            SELECT p.Name, p.Surname, r.RecordTime, d.Location, r.Direction
+            SELECT p.Name, p.Surname, r.RecordTime, d.Location, d.Direction
             FROM Record r
             JOIN Person p ON r.PersonID = p.PersonID
             JOIN Door d ON r.DoorID = d.DoorID
