@@ -12,18 +12,6 @@ from SQL.QueryProcessor import query_processor
 
 app = Flask(__name__)
 
-async def get_db_connection():
-    return await asyncpg.connect(
-        database="accesscontrolsystem",
-        user="postgres",
-        password="admin",
-        host="localhost",
-        port="5432"
-    )
-
-def serialize_vector(feature_vector):
-    return pickle.dumps(feature_vector)
-
 @app.route('/add_person', methods=['POST'])
 def add_person():
     data = request.json
@@ -72,32 +60,6 @@ def get_people():
         } for person in people]
 
     return result
-
-# @app.route('/get_people', methods=['GET'])
-# async def get_people():
-#     conn = await get_db_connection()
-#     try:
-#         people = await conn.fetch('''
-#             SELECT PersonID, Name, Gender, Age, PhoneNumber, Position, FeatureVector, ImageData FROM Person
-#         ''')
-#         result = [{
-#             'person_id': person['personid'],
-#             'name': person['name'],
-#             'gender': person['gender'],
-#             'age': person['age'],
-#             'phone': person['phonenumber'],
-#             'position': person['position'],
-#             'feature_vector': pickle.loads(person['featurevector']),  # Deserialized
-#             'image': pickle.loads(person['imagedata'])  # Deserialized
-#             } for person in people]
-        
-#         await conn.close()
-#         return jsonify(result), 200
-#     except Exception as e:
-#         print(str(e))
-#         await conn.close()
-#         return jsonify({'error': str(e)}), 400
-
 
 if __name__ == '__main__':
     app.run(debug=True, port=5555)
