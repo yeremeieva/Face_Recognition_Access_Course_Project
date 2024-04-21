@@ -86,6 +86,7 @@ class Gate:
             'record_id': self.record_id_counter,
             'access': bool_access,
             'door_id': self.door_id,
+            'direction': self.direction,
             'person_id': person_id
         }
         

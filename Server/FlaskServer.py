@@ -39,7 +39,8 @@ def get_records():
         'record_time': str(record[1].utcnow()),
         'access': record[2],
         'door_id': record[3],
-        'person_id': record[4]}
+        'direction': record[4],
+        'person_id': record[5]}
         for record in records]
 
     return result

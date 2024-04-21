@@ -37,7 +37,7 @@ CREATE TABLE Record
     DoorID      integer         NOT NULL,
     Direction   DoorDirection   NOT NULL,
     PersonID    integer         NULL references Person (PersonID),
-    FOREIGN KEY (DoorID, Direction) REFERENCES Door (DoorID, Direction)
+	FOREIGN KEY (DoorID, Direction) REFERENCES Door (DoorID, Direction)
 );
 
 CREATE INDEX PersonID ON Person (PersonID);
