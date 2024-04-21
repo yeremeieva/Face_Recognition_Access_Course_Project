@@ -79,48 +79,59 @@
     <button id="back-button" style="display:none;">Back</button>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script>
-    $(document).ready(function() {
-        $('form').on('submit', function(event) {
-            event.preventDefault(); // Prevent the form from submitting through the browser.
+<script>
+$(document).ready(function() {
+    $('form').on('submit', function(event) {
+        event.preventDefault(); // Prevent the form from submitting through the browser.
 
-            var form = $(this);
-            $.ajax({
-                type: form.attr('method'),
-                url: form.attr('action'),
-                data: form.serialize(),
-                success: function(data) {
-                    renderTable(data); // Render data as a table
-                    $('#back-button').show(); // Show the back button
-                },
-                error: function() {
-                    $('#results').html('An error occurred.');
-                    $('#back-button').show(); // Show the back button
-                }
-            });
+        var form = $(this);
+        $.ajax({
+            type: form.attr('method'),
+            url: form.attr('action'),
+            data: form.serialize(),
+            success: function(data) {
+                renderTable(data); // Render data as a dynamic table
+                $('#back-button').show(); // Show the back button
+            },
+            error: function() {
+                $('#results').html('An error occurred.');
+                $('#back-button').show(); // Show the back button
+            }
         });
-
-        $('#back-button').click(function() {
-            $(this).hide(); // Hide the back button
-            $('#results').empty(); // Clear the results
-            $('form').show(); // Show the form
-        });
-
-        function renderTable(data) {
-            var table = '<table>';
-            table += '<tr><th>Name</th><th>Surname</th><th>Record Time</th><th>Location</th><th>Direction</th></tr>';
-            $.each(data, function(index, row) {
-                table += '<tr>';
-                table += '<td>' + row.Name + '</td>';
-                table += '<td>' + row.Surname + '</td>';
-                table += '<td>' + row.RecordTime + '</td>';
-                table += '<td>' + row.Location + '</td>';
-                table += '<td>' + row.Direction + '</td>';
-                table += '</tr>';
-            });
-            table += '</table>';
-            $('#results').html(table); // Place the table in the results div
-        }
     });
-    </script>
+
+    $('#back-button').click(function() {
+        $(this).hide(); // Hide the back button
+        $('#results').empty(); // Clear the results
+        $('form').show(); // Show the forms
+    });
+
+    function renderTable(data) {
+        if (data.length === 0) {
+            $('#results').html('No records found.');
+            return;
+        }
+        var table = '<table>';
+        // Create headers based on the first object's keys
+        var headers = Object.keys(data[0]);
+        table += '<tr>';
+        headers.forEach(function(header) {
+            table += '<th>' + header + '</th>';
+        });
+        table += '</tr>';
+
+        // Create rows
+        data.forEach(function(row) {
+            table += '<tr>';
+            headers.forEach(function(header) {
+                table += '<td>' + (row[header] ? row[header] : '') + '</td>';
+            });
+            table += '</tr>';
+        });
+        table += '</table>';
+        $('#results').html(table); // Place the table in the results div
+    }
+});
+</script>
+
 </html>

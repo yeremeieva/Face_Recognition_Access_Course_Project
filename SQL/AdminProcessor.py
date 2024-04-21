@@ -1,27 +1,18 @@
 import asyncio
-from SQL.ConnectionPool import ConnectionPool
+import asyncpg
+from SQL.config import dsn
 
 class AdminProcessor:
     def __init__(self):
-        self.conn_pool = ConnectionPool().conn_pool
+        pass
 
     async def run_query(self, sql, params=None):
-        conn = self.conn_pool.getconn()
-        try:
-            cursor = conn.cursor()
-            cursor.execute(sql, params)
-            if cursor.description:
-                result = cursor.fetchall()
-            else:
-                conn.commit()
-                result = cursor.rowcount
-            return result
-        except Exception as e:
-            conn.rollback()
-            raise e
-        finally:
-            cursor.close()
-            self.conn_pool.putconn(conn)
+        async with asyncpg.create_pool(min_size=4, max_size=20, dsn=dsn) as conn_pool:
+            async with conn_pool.acquire() as connection:
+                if params:
+                    return await connection.fetch(sql, *params)
+                else:
+                    return await connection.fetch(sql)
 
     async def process_query(self, sql, params=None):
         return await self.run_query(sql, params)
@@ -38,7 +29,7 @@ class AdminProcessor:
                 JOIN
                     Person p ON p.PersonID = r.PersonID
                 WHERE
-                    p.PersonID = %s AND
+                    p.PersonID = $1 AND
                     recordtime >= CURRENT_DATE AND
                     recordtime < CURRENT_DATE + INTERVAL '1 day'
                 GROUP BY
@@ -60,7 +51,7 @@ class AdminProcessor:
             SELECT p.Name, p.Surname, r.RecordTime, d.Location, r.Direction
             FROM Record r
             JOIN Person p ON r.PersonID = p.PersonID
-            JOIN Door d ON r.DoorID = d.DoorID
+            JOIN Door d ON r.DoorID = d.DoorID AND d.Direction = r.Direction
             WHERE DATE(r.RecordTime) = CURRENT_DATE;
         """
         return asyncio.run(self.process_query(sql))
@@ -71,18 +62,18 @@ class AdminProcessor:
             SELECT p.Name, p.Surname, r.RecordTime, d.Location
             FROM Record r
             JOIN Person p ON r.PersonID = p.PersonID
-            JOIN Door d ON r.DoorID = d.DoorID
+            JOIN Door d ON r.DoorID = d.DoorID AND d.Direction = r.Direction
             WHERE r.Access = FALSE AND
             DATE(r.RecordTime) = CURRENT_DATE;
         """
         return asyncio.run(self.process_query(sql))
 
     def update_person_position(self, person_id, new_position):
-        sql = "UPDATE Person SET Position = %s WHERE PersonID = %s;"
+        sql = "UPDATE Person SET Position = $1 WHERE PersonID = $2;"
         return asyncio.run(self.process_query(sql, (new_position, person_id)))
 
     def list_people_by_position_and_gender(self, position, gender):
-        sql = "SELECT * FROM Person WHERE Position = %s AND Gender = %s;"
+        sql = "SELECT * FROM Person WHERE Position = $1 AND Gender = $2;"
         return asyncio.run(self.process_query(sql, (position, gender)))
 
 # Usage

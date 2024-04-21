@@ -2,6 +2,8 @@ psycopg2
 pillow
 numpy
 flask
+asyncpg
+asyncio
 torch
 torchvision
 facenet_pytorch
