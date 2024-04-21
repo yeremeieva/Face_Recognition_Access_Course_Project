@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <style>
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            margin-right: 10px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Admin Dashboard</h1>
+
+    <!-- Form for Daily Access Report -->
+    <form method="post" action="/admin">
+        <input type="hidden" name="action" value="daily_access_report">
+        <button type="submit">Get Daily Access Report</button>
+    </form>
+
+    <!-- Form for Denied Access Report -->
+    <form method="post" action="/admin">
+        <input type="hidden" name="action" value="denied_access_report">
+        <button type="submit">Get Denied Access Report</button>
+    </form>
+
+    <!-- Form for Updating Person's Position -->
+    <form method="post" action="/admin">
+        <input type="hidden" name="action" value="update_person_position">
+        <label for="person_id">Person ID:</label>
+        <input type="text" id="person_id" name="person_id" required>
+        <label for="new_position">New Position:</label>
+        <select id="new_position" name="new_position" required>
+            <option value="Admin">Admin</option>
+            <option value="Worker">Worker</option>
+        </select>
+        <button type="submit">Update Position</button>
+    </form>
+
+    <!-- Form for Listing People by Position and Gender -->
+    <form method="post" action="/admin">
+        <input type="hidden" name="action" value="list_by_position_gender">
+        <label for="position">Position:</label>
+        <select id="position" name="position" required>
+            <option value="Admin">Admin</option>
+            <option value="Worker">Worker</option>
+        </select>
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+        </select>
+        <button type="submit">List People</button>
+    </form>
+
+    <!-- Form for Time Spent by Person -->
+    <form method="post" action="/admin">
+        <input type="hidden" name="action" value="time_spent">
+        <label for="person_id_time">Person ID:</label>
+        <input type="text" id="person_id_time" name="person_id" required>
+        <button type="submit">Get Time Spent</button>
+    </form>
+
+    <div id="results"></div>
+    <button id="back-button" style="display:none;">Back</button>
+</body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('form').on('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting through the browser.
+
+            var form = $(this);
+            $.ajax({
+                type: form.attr('method'),
+                url: form.attr('action'),
+                data: form.serialize(),
+                success: function(data) {
+                    renderTable(data); // Render data as a table
+                    $('#back-button').show(); // Show the back button
+                },
+                error: function() {
+                    $('#results').html('An error occurred.');
+                    $('#back-button').show(); // Show the back button
+                }
+            });
+        });
+
+        $('#back-button').click(function() {
+            $(this).hide(); // Hide the back button
+            $('#results').empty(); // Clear the results
+            $('form').show(); // Show the form
+        });
+
+        function renderTable(data) {
+            var table = '<table>';
+            table += '<tr><th>Name</th><th>Surname</th><th>Record Time</th><th>Location</th><th>Direction</th></tr>';
+            $.each(data, function(index, row) {
+                table += '<tr>';
+                table += '<td>' + row.Name + '</td>';
+                table += '<td>' + row.Surname + '</td>';
+                table += '<td>' + row.RecordTime + '</td>';
+                table += '<td>' + row.Location + '</td>';
+                table += '<td>' + row.Direction + '</td>';
+                table += '</tr>';
+            });
+            table += '</table>';
+            $('#results').html(table); // Place the table in the results div
+        }
+    });
+    </script>
+</html>
