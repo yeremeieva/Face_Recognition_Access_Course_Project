@@ -19,7 +19,7 @@ class QueryProcessor:
         return await query_processor.run_query(query)
 
     def query_records(self):
-        sql = "SELECT RecordID, RecordTime, Access, DoorID, PersonID FROM Record"
+        sql = "SELECT RecordID, RecordTime, Access, DoorID, Direction, PersonID FROM Record"
         return asyncio.run(self.process_query(sql))
 
     def query_people(self):

@@ -18,8 +18,8 @@ class FacesTableWindow(QWidget):
         self.setMinimumSize(400, 400)
         self.layout = QVBoxLayout(self)
         self.table = QTableWidget()
-        self.table.setColumnCount(5)  # RecordID, RecordTime, Access, DoorID, PersonID
-        self.table.setHorizontalHeaderLabels(['RecordID', 'RecordTime', 'Access', 'DoorID', 'PersonID'])
+        self.table.setColumnCount(6)  # RecordID, RecordTime, Access, DoorID, Direction, PersonID
+        self.table.setHorizontalHeaderLabels(['RecordID', 'RecordTime', 'Access', 'DoorID', 'Direction', 'PersonID'])
         self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
         self.table.setSelectionBehavior(QTableWidget.SelectRows)
         self.table.setEditTriggers(QTableWidget.NoEditTriggers)
@@ -58,6 +58,7 @@ class FacesTableWindow(QWidget):
                 self.table.setItem(row_index, 1, QTableWidgetItem(record['record_time']))
                 self.table.setItem(row_index, 2, QTableWidgetItem('Yes' if record['access'] else 'No'))
                 self.table.setItem(row_index, 3, QTableWidgetItem(str(record['door_id'])))
-                self.table.setItem(row_index, 4, QTableWidgetItem(str(record['person_id'])))
+                self.table.setItem(row_index, 4, QTableWidgetItem(str(record['direction'])))
+                self.table.setItem(row_index, 5, QTableWidgetItem(str(record['person_id'])))
         else:
             print(f"Failed to fetch records: {response.text}")

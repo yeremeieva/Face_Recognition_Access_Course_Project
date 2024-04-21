@@ -22,10 +22,11 @@ CREATE TABLE Person
 
 CREATE TABLE Door
 (
-    DoorID      integer         PRIMARY KEY,
+    DoorID      integer         NOT NULL,
     AccessType  PositionType    NOT NULL,
     Direction   DoorDirection   NOT NULL,
-    Location    varchar(50)     NOT NULL
+    Location    varchar(50)     NOT NULL,
+    PRIMARY KEY (DoorID, Direction)
 );
 
 CREATE TABLE Record
@@ -33,10 +34,11 @@ CREATE TABLE Record
     RecordID    integer         PRIMARY KEY,
     RecordTime  TIMESTAMP WITH TIME ZONE DEFAULT ('now'::text)::timestamp with time zone,
     Access      boolean         NOT NULL,
-    DoorID      integer         NOT NULL references Door (DoorID),
-    PersonID    integer         NULL references Person (PersonID)
+    DoorID      integer         NOT NULL,
+    Direction   DoorDirection   NOT NULL,
+    PersonID    integer         NULL references Person (PersonID),
+	FOREIGN KEY (DoorID, Direction) REFERENCES Door (DoorID, Direction)
 );
-
 
 CREATE INDEX PersonID ON Person (PersonID);
 
