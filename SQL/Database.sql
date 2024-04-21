@@ -10,6 +10,7 @@ CREATE TABLE Person
 (
     PersonID    integer         PRIMARY KEY,
     Name        varchar(50)     NOT NULL,
+    Surname     varchar(50)     NOT NULL,
     Gender      GenderType      NOT NULL,
     Age         integer         NOT NULL CHECK (Age >= 0),
     PhoneNumber varchar(20)     NOT NULL,
@@ -23,7 +24,8 @@ CREATE TABLE Door
 (
     DoorID      integer         PRIMARY KEY,
     AccessType  PositionType    NOT NULL,
-    Direction   DoorDirection   NOT NULL
+    Direction   DoorDirection   NOT NULL,
+    Location    varchar(50)     NOT NULL
 );
 
 CREATE TABLE Record

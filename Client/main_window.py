@@ -26,7 +26,7 @@ class MainWindow(QMainWindow):
     def _initUI(self):
         central_widget = QWidget()
         # set background image
-        self.background_image = QImage('background.png')
+        self.background_image = QImage('Client/background.png')
         if self.background_image.isNull():
             print("Failed to load background.png")
 
@@ -53,7 +53,7 @@ class MainWindow(QMainWindow):
         right_panel = QVBoxLayout(right_panel_widget)
         self.door_id_label = QLabel(f"Door ID: \t {self.gate.door_id}")
         self.direction_label = QLabel(f"Direction: \t {self.gate.direction}")
-        self.face_count_label = QLabel(f"Saved Faces: \t {len(self.gate.facenet.people_database)}")
+        self.face_count_label = QLabel(f"Detected Faces: \t {len(self.gate.facenet.people_database)}")
         self.time_label = QLabel("Time: \t --:--")
         self.update_time()
 

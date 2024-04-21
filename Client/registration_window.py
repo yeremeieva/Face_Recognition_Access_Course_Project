@@ -12,12 +12,13 @@ class RegistrationWindow(QWidget):
 
         self.setWindowTitle("Register New Face")
         self.setMinimumSize(300, 300)
-        self.background_image = QImage('background.png')
+        self.background_image = self.main_window.background_image
         if self.background_image.isNull():
             print("Failed to load background.png")
         self.layout = QVBoxLayout(self)
 
         self.name_edit = QLineEdit()
+        self.surname_edit = QLineEdit()
         self.gender_combo = QComboBox()
         self.gender_combo.addItems(["Male", "Female"])
         self.age_edit = QLineEdit()
@@ -35,6 +36,7 @@ class RegistrationWindow(QWidget):
         # Labels
         form_layout = QVBoxLayout()
         name_label = QLabel("Name:")
+        surname_label = QLabel("Surname:")
         gender_label = QLabel("Gender:")
         age_label = QLabel("Age:")
         phone_label = QLabel("Phone:")
@@ -43,6 +45,7 @@ class RegistrationWindow(QWidget):
         # label style
         label_style = "color: white; font-size: 14px; background: transparent;"
         name_label.setStyleSheet(label_style)
+        surname_label.setStyleSheet(label_style)
         gender_label.setStyleSheet(label_style)
         age_label.setStyleSheet(label_style)
         phone_label.setStyleSheet(label_style)
@@ -55,6 +58,8 @@ class RegistrationWindow(QWidget):
         # Layout
         form_layout.addWidget(name_label)
         form_layout.addWidget(self.name_edit)
+        form_layout.addWidget(surname_label)
+        form_layout.addWidget(self.surname_edit)
         form_layout.addWidget(gender_label)
         form_layout.addWidget(self.gender_combo)
         form_layout.addWidget(age_label)
@@ -84,6 +89,7 @@ class RegistrationWindow(QWidget):
         else:
             if box is not None:
                 name = self.name_edit.text()
+                surname = self.surname_edit.text()
                 gender = self.gender_combo.currentText()
                 age = self.age_edit.text()
                 phone = self.phone_edit.text()
@@ -91,7 +97,7 @@ class RegistrationWindow(QWidget):
 
                 face = current_frame[int(box[1]):int(box[3]), int(box[0]):int(box[2])]
 
-                self.gate.add_person(name, gender, age, phone, position, face, feature_vector)
+                self.gate.add_person(name, surname, gender, age, phone, position, face, feature_vector)
                 self.main_window.update_face_count()
                 QMessageBox.information(self, "Success", "New face registered successfully!")
             else:

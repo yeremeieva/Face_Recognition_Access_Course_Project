@@ -8,11 +8,12 @@ from main_window import MainWindow
 from Facenet import Facenet
 
 class Gate:
-    def __init__(self, door_id, direction, positions, door_type, url):
+    def __init__(self, door_id, direction, positions, door_type, location, url):
         self.door_id = door_id
         self.direction = direction
         self.positions = positions
         self.door_type = door_type
+        self.location = location
         self.url = url
 
         self.cap = cv2.VideoCapture(0)
@@ -23,7 +24,8 @@ class Gate:
         door_details = {
             'door_id': self.door_id,
             'direction': self.direction,
-            'door_access': self.positions[0]
+            'door_access': self.positions[0],
+            'location': self.location
         }
         self.person_id_counter, self.record_id_counter = 0, 0
 
@@ -89,12 +91,13 @@ class Gate:
         
         returnData = requests.post(f"{self.url}/add_record", json=record_details)
 
-    def add_person(self, name, gender, age, phone, position, face, feature_vector):
+    def add_person(self, name, surname, gender, age, phone, position, face, feature_vector):
 
         self.person_id_counter += 1
         person_details = {
             'person_id': self.person_id_counter,
             'name': name,
+            'surname': surname,
             'gender': gender,
             'age': int(age),
             'phone': phone,

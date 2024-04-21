@@ -12,7 +12,7 @@ class FacesTableWindow(QWidget):
         super().__init__()
         self.setWindowTitle("Access Records")
         # set background image
-        self.background_image = QImage('background.png')
+        self.background_image = self.main_window.background_image
         if self.background_image.isNull():
             print("Failed to load background.png")
         self.setMinimumSize(400, 400)
